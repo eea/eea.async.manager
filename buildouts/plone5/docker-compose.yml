@@ -1,0 +1,9 @@
+async_manager:
+    image: plone:5
+    ports:
+    - "8080"
+    volumes:
+    - ../../../:/plone/instance/src/eea.async.manager
+    environment:
+      ADDONS: "eea.async.manager plone.app.testing"
+      DEVELOP: "src/eea.async.manager"
