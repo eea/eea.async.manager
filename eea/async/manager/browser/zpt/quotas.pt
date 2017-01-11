@@ -1,0 +1,58 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+        metal:use-macro="here/prefs_main_template/macros/master"
+        i18n:domain="eea">
+
+<body>
+
+<div metal:fill-slot="prefs_configlet_main">
+    <h1 class="documentFirstHeading" i18n:translate="">
+      Async Manager: Quotas for Queue
+      <tal:name i18n:name="queue" tal:replace="python:view.name or '(Default)'" />
+     </h1>
+    
+    <a href="" class="link-parent" tal:attributes="href string:$portal_url/@@async-controlpanel-queues" i18n:translate="">Up to Async Manager Queues</a>
+
+    <form method="post" action="." tal:attributes="action string:${context/absolute_url}/${view/__name__}">
+        <table class="listing controlpanel-listing">
+            <thead>
+            <tr>
+                <th i18n:translate="">Quota Name</th>
+                <th i18n:translate="">Quota Size</th>
+                <th i18n:translate="">Jobs</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tal:items repeat="key_val view/quotas">
+                <tr tal:define="
+                    oddrow repeat/key_val/odd; 
+                    key python:key_val[0];
+                    quota python:key_val[1];
+                    jobs python:len([job for job in quota]);
+                    "
+                    tal:attributes="class python:oddrow and 'even' or 'odd'">
+                    <td>
+                        <span tal:content="python:key" />
+                    </td>
+                    <td>
+                        <span tal:content="python:quota.size" />
+                    </td>
+                    <td>
+                        <span tal:content="jobs" />
+                    </td>
+                </tr>
+            </tal:items>
+            </tbody>
+        </table>
+
+        <div class="inlineDisplay"  tal:condition="nothing">
+          <input tal:replace="structure context/@@authenticator/authenticator" />
+          <input type="hidden" name="queue" tal:attributes="value view/name" />
+          <input class="context" type="submit" value="Delete" name="form.button.Delete" i18n:attributes="value" />
+        </div>
+    </form>
+
+</div>
+
+</body>
+</html>

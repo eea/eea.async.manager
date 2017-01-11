@@ -1,6 +1,41 @@
 <configure
-    xmlns="http://namespaces.zope.org/zope"
-    xmlns:browser="http://namespaces.zope.org/browser"
-    i18n_domain="eea">
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  i18n_domain="eea">
+    
+  <browser:page 
+    name="async-controlpanel-queues"
+    layer="eea.async.manager.interfaces.IEEAAsyncManagerLayer"
+    for="zope.interface.Interface"
+    class=".app.controlpanel.Queues"
+    template="zpt/queues.pt"
+    permission="cmf.ManagePortal"
+    />
 
+  <browser:page 
+    name="async-controlpanel-queue"
+    layer="eea.async.manager.interfaces.IEEAAsyncManagerLayer"
+    for="zope.interface.Interface"
+    class=".app.controlpanel.Queue"
+    permission="cmf.ManagePortal"
+    />
+
+  <browser:page 
+    name="async-controlpanel-dispatchers"
+    layer="eea.async.manager.interfaces.IEEAAsyncManagerLayer"
+    for="zope.interface.Interface"
+    class=".app.controlpanel.Dispatchers"
+    template="zpt/dispatchers.pt"
+    permission="cmf.ManagePortal"
+    />
+
+  <browser:page 
+    name="async-controlpanel-quotas"
+    layer="eea.async.manager.interfaces.IEEAAsyncManagerLayer"
+    for="zope.interface.Interface"
+    class=".app.controlpanel.Quotas"
+    template="zpt/quotas.pt"
+    permission="cmf.ManagePortal"
+    />
+    
 </configure>

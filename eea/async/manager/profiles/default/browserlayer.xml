@@ -2,6 +2,6 @@
 <layers>
   <layer
       name="eea.async.manager"
-      interface="eea.async.manager.interfaces.IEeaAsyncManagerLayer"
+      interface="eea.async.manager.interfaces.IEEAAsyncManagerLayer"
       />
 </layers>

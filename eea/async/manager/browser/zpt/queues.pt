@@ -1,0 +1,79 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+        metal:use-macro="here/prefs_main_template/macros/master"
+        i18n:domain="eea">
+
+<body>
+
+<div metal:fill-slot="prefs_configlet_main">
+    <h1 class="documentFirstHeading" i18n:translate="">Async Manager: Queues</h1>
+    
+    <a href="" class="link-parent" tal:attributes="href string:$portal_url/@@overview-controlpanel" i18n:translate="">Up to Site Setup</a>
+
+    <form method="post" action="." tal:attributes="action string:${context/absolute_url}/${view/__name__}">
+
+        <table class="listing controlpanel-listing">
+            <thead>
+            <tr>
+              <th class="smallcolumn nosort"><input type="checkbox" name="select_all" onclick="toggleSelect(this, 'ids:list')" /></th>
+              <th i18n:translate="">Queue name</th>
+              <th i18n:translate="">Dispatchers (active/dead)</th>
+              <th i18n:translate="">Quotas</th>
+              <th i18n:translate="">Queued jobs</th>
+              <th i18n:translate="">Failed jobs</th>
+              <th i18n:translate="">Finished jobs</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tal:queues repeat="name python:view.queues">
+                <tr tal:define="
+                    queue python:view.queue(name);
+                    oddrow repeat/name/odd;"
+                    tal:attributes="class python:oddrow and 'even' or 'odd'">
+                    <td>
+                      <input type="checkbox" name="ids:list" tal:attributes="value name" />
+                    </td>
+                    <td>
+                      <span tal:content="python:name or '(Default)'" />
+                    </td>
+                    <td>
+                      <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-dispatchers?queue=$name" title="Dispatchers" i18n:attributes="title">
+                        <span class="state-visible" tal:content="python:queue.dispatchers" /> /
+                        <span class="state-private" tal:content="python:queue.dead" />
+                      </a>
+                    </td>
+                    <td>
+                      <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-quotas?queue=$name" title="Queue Quotas" i18n:attributes="title">
+                        <span tal:content="python:queue.quotas" />
+                      </a>
+                    </td>
+                    <td>
+                      <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-jobs?queue=$name" title="Pending Jobs" i18n:attributes="title">
+                        <span class="state-pending" tal:content="python:queue.queued" />
+                      </a>
+                    </td>
+                    <td>
+                      <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-jobs?queue=$name&status=failed" title="Failed Jobs" i18n:attributes="title">
+                        <span class="state-private" tal:content="python:queue.failed" />
+                      </a>
+                    </td>
+                    <td>
+                      <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-jobs?queue=$name&status=finished" title="Finished Jobs" i18n:attributes="title">
+                        <span class="state-visible" tal:content="python:queue.finished" />
+                      </a>
+                    </td>
+                </tr>
+            </tal:queues>
+            </tbody>
+        </table>
+
+        <div class="inlineDisplay">
+          <input tal:replace="structure context/@@authenticator/authenticator" />
+          <input class="context" type="submit" value="Cleanup completed jobs" title="Remove all finished jobs (including failed ones)" name="form.button.Clear" i18n:attributes="value title" />
+        </div>
+    </form>
+
+</div>
+
+</body>
+</html>
