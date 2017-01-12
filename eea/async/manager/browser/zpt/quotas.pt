@@ -38,7 +38,9 @@
                         <span tal:content="python:quota.size" />
                     </td>
                     <td>
-                        <span tal:content="jobs" />
+                        <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-jobs?queue=${view/name}&quota=$key" title="Active jobs" i18n:attributes="title">
+                            <span class="state-pending" tal:content="jobs" />
+                        </a>
                     </td>
                 </tr>
             </tal:items>

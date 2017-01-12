@@ -3,6 +3,19 @@
         metal:use-macro="here/prefs_main_template/macros/master"
         i18n:domain="eea">
 
+<metal:javascript_head_slot fill-slot="javascript_head_slot">
+    <script type="text/javascript" charset="utf-8">
+        if(!window.toggleSelect){
+            var toggleSelect = function (elem, selector) {
+                var checkboxes = [].slice.call(document.querySelectorAll('input[type=checkbox][name="' + selector + '"]'));
+                checkboxes.forEach(function(checkbox){
+                     checkbox.checked = elem.checked;
+                });
+            };
+        }
+    </script>
+</metal:javascript_head_slot>
+
 <body>
 
 <div metal:fill-slot="prefs_configlet_main">
@@ -15,7 +28,9 @@
         <table class="listing controlpanel-listing">
             <thead>
             <tr>
-              <th class="smallcolumn nosort"><input type="checkbox" name="select_all" onclick="toggleSelect(this, 'ids:list')" /></th>
+              <th class="smallcolumn nosort">
+                  <input class="select-all" type="checkbox" name="select_all" onclick="toggleSelect(this, 'ids:list');" />
+              </th>
               <th i18n:translate="">Queue name</th>
               <th i18n:translate="">Dispatchers (active/dead)</th>
               <th i18n:translate="">Quotas</th>
@@ -43,22 +58,22 @@
                       </a>
                     </td>
                     <td>
-                      <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-quotas?queue=$name" title="Queue Quotas" i18n:attributes="title">
+                      <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-quotas?queue=$name" title="Quotas" i18n:attributes="title">
                         <span tal:content="python:queue.quotas" />
                       </a>
                     </td>
                     <td>
-                      <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-jobs?queue=$name" title="Pending Jobs" i18n:attributes="title">
+                      <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-jobs?queue=$name" title="Pending jobs" i18n:attributes="title">
                         <span class="state-pending" tal:content="python:queue.queued" />
                       </a>
                     </td>
                     <td>
-                      <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-jobs?queue=$name&status=failed" title="Failed Jobs" i18n:attributes="title">
+                      <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-jobs?queue=$name&status=failed" title="Failed jobs" i18n:attributes="title">
                         <span class="state-private" tal:content="python:queue.failed" />
                       </a>
                     </td>
                     <td>
-                      <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-jobs?queue=$name&status=finished" title="Finished Jobs" i18n:attributes="title">
+                      <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-jobs?queue=$name&status=finished" title="Finished jobs" i18n:attributes="title">
                         <span class="state-visible" tal:content="python:queue.finished" />
                       </a>
                     </td>
