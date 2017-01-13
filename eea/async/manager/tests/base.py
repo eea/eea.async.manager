@@ -36,8 +36,6 @@ class EEAFixture(PloneSandboxLayer):
         # Login as manager
         setRoles(portal, TEST_USER_ID, ['Manager'])
 
-        # Create testing environment
-        portal.invokeFactory("Folder", "sandbox", title="Sandbox")
 
 EEAFIXTURE = EEAFixture()
 FUNCTIONAL_TESTING = FunctionalTesting(bases=(EEAFIXTURE,),
