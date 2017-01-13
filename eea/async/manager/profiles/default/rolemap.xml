@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<rolemap>
+  <permissions>
+    <permission name="EEA Async Manager: View" acquire="True">
+      <role name="Manager"/>
+    </permission>
+    <permission name="EEA Async Manager: Edit" acquire="True">
+      <role name="Manager"/>
+    </permission>
+  </permissions>
+</rolemap>

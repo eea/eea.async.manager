@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 <object name="portal_controlpanel">
-  
-  <configlet 
+
+  <configlet
     title="Async Manager"
-    action_id="eea.async.manager" 
+    action_id="eea.async.manager"
     appId="eea.async.manager"
-    category="Products" 
-    condition_expr="" 
+    category="Products"
+    condition_expr=""
     visible="True"
     icon_expr="string:${portal_url}/maintenance_icon.png"
     url_expr="string:$portal_url/@@async-controlpanel-queues">
-      <permission>Manage portal</permission>
+      <permission>EEA Async Manager: View</permission>
   </configlet>
 
 </object>

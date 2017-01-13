@@ -2,50 +2,48 @@
   xmlns="http://namespaces.zope.org/zope"
   xmlns:browser="http://namespaces.zope.org/browser"
   i18n_domain="eea">
-    
-  <include package="Products.CMFCore" />
 
-  <browser:page 
+  <browser:page
     name="async-controlpanel-queues"
     layer="eea.async.manager.interfaces.IEEAAsyncManagerLayer"
     for="zope.interface.Interface"
-    class=".app.controlpanel.Queues"
+    class=".app.queues.Queues"
     template="zpt/queues.pt"
-    permission="cmf.ManagePortal"
+    permission="eea.async.manager.view"
     />
 
-  <browser:page 
+  <browser:page
     name="async-controlpanel-queue"
     layer="eea.async.manager.interfaces.IEEAAsyncManagerLayer"
     for="zope.interface.Interface"
-    class=".app.controlpanel.Queue"
-    permission="cmf.ManagePortal"
+    class=".app.queues.Queue"
+    permission="eea.async.manager.view"
     />
 
-  <browser:page 
+  <browser:page
     name="async-controlpanel-dispatchers"
     layer="eea.async.manager.interfaces.IEEAAsyncManagerLayer"
     for="zope.interface.Interface"
-    class=".app.controlpanel.Dispatchers"
+    class=".app.dispatchers.Dispatchers"
     template="zpt/dispatchers.pt"
-    permission="cmf.ManagePortal"
+    permission="eea.async.manager.view"
     />
 
   <browser:page
     name="async-controlpanel-dispatcher"
     layer="eea.async.manager.interfaces.IEEAAsyncManagerLayer"
     for="zope.interface.Interface"
-    class=".app.controlpanel.Dispatcher"
-    permission="cmf.ManagePortal"
+    class=".app.dispatchers.Dispatcher"
+    permission="eea.async.manager.view"
     />
 
-  <browser:page 
+  <browser:page
     name="async-controlpanel-quotas"
     layer="eea.async.manager.interfaces.IEEAAsyncManagerLayer"
     for="zope.interface.Interface"
-    class=".app.controlpanel.Quotas"
+    class=".app.quotas.Quotas"
     template="zpt/quotas.pt"
-    permission="cmf.ManagePortal"
+    permission="eea.async.manager.view"
     />
-    
+
 </configure>

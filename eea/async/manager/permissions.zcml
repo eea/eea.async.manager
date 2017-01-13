@@ -1,0 +1,17 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  i18n_domain="eea">
+
+  <permission
+    id="eea.async.manager.view"
+    title="EEA Async Manager: View"
+    description="Can view Async Manager ControlPanel"
+    />
+
+  <permission
+    id="eea.async.manager.edit"
+    title="EEA Async Manager: Edit"
+    description="Can edit Async Manager ControlPanel"
+    />
+
+</configure>
