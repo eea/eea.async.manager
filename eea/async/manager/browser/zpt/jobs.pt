@@ -14,9 +14,9 @@
         <tal:name i18n:name="dname" tal:condition="view/qtname" tal:replace="string:quota %{view/qtname}" />
      </h1>
 
-    <a href="" class="link-parent" tal:condition="view/dname" tal:attributes="href string:$portal_url/@@async-controlpanel-dispatchers?queue=${view/qname}" i18n:translate="">Up to Async Manager Dispatchers</a>
-    <a href="" class="link-parent" tal:condition="view/qtname" tal:attributes="href string:$portal_url/@@async-controlpanel-quotas?queue=${view/qname}" i18n:translate="">Up to Async Manager Quotas</a>
-    <a href="" class="link-parent" tal:condition="python:not (view.dname or view.qtname)" tal:attributes="href string:$portal_url/@@async-controlpanel-queues" i18n:translate="">Up to Async Manager Queues</a>
+    <a href="" class="link-parent" tal:condition="view/dname" tal:attributes="href string:$portal_url/@@async-controlpanel-dispatchers?queue=${view/qname}" i18n:translate="">Back to Async Manager Dispatchers</a>
+    <a href="" class="link-parent" tal:condition="view/qtname" tal:attributes="href string:$portal_url/@@async-controlpanel-quotas?queue=${view/qname}" i18n:translate="">Back to Async Manager Quotas</a>
+    <a href="" class="link-parent" tal:condition="python:not (view.dname or view.qtname)" tal:attributes="href string:$portal_url/@@async-controlpanel-queues" i18n:translate="">Back to Async Manager Queues</a>
 
     <form method="post" action="." tal:attributes="action string:${context/absolute_url}/${view/__name__}">
         <table class="listing controlpanel-listing">

@@ -10,8 +10,8 @@
       Async Manager: Quotas for Queue
       <tal:name i18n:name="queue" tal:replace="python:view.name or '(Default)'" />
      </h1>
-    
-    <a href="" class="link-parent" tal:attributes="href string:$portal_url/@@async-controlpanel-queues" i18n:translate="">Up to Async Manager Queues</a>
+
+    <a href="" class="link-parent" tal:attributes="href string:$portal_url/@@async-controlpanel-queues" i18n:translate="">Back to Async Manager Queues</a>
 
     <form method="post" action="." tal:attributes="action string:${context/absolute_url}/${view/__name__}">
         <table class="listing controlpanel-listing">
@@ -25,7 +25,7 @@
             <tbody>
             <tal:items repeat="key_val view/quotas">
                 <tr tal:define="
-                    oddrow repeat/key_val/odd; 
+                    oddrow repeat/key_val/odd;
                     key python:key_val[0];
                     quota python:key_val[1];
                     jobs python:len([job for job in quota]);
