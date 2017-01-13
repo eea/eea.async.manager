@@ -11,7 +11,7 @@ from eea.async.manager.config import EEAMessageFactory as _
 logger = logging.getLogger("eea.async.manager")
 
 class Queue(BrowserView):
-    """ Queue stats 
+    """ Queue stats
     """
     def __init__(self, context, request):
         super(Queue, self).__init__(context, request)
@@ -26,12 +26,12 @@ class Queue(BrowserView):
         self._failed = None
         self._finished = None
 
-    @property 
+    @property
     def name(self):
         """ Queue name
         """
         return self._name
-    
+
     @property
     def queue(self):
         """ zc.async queue
@@ -43,14 +43,14 @@ class Queue(BrowserView):
             self._queue = service.getQueues()[self.name]
         return self._queue
 
-    @property 
+    @property
     def queued(self):
         """ Queued jobs
         """
         if self._queued is None:
             self.refresh()
         return self._queued
-    
+
     @property
     def active(self):
         """ Active jobs
@@ -58,7 +58,7 @@ class Queue(BrowserView):
         if self._active is None:
             self.refresh()
         return self._active
-    
+
     @property
     def failed(self):
         """ Failed jobs
@@ -66,7 +66,7 @@ class Queue(BrowserView):
         if self._failed is None:
             self.refresh()
         return self._failed
-        
+
     @property
     def finished(self):
         """ Finished jobs
@@ -82,8 +82,8 @@ class Queue(BrowserView):
         if self._dispatchers is None:
             self.refresh()
         return self._dispatchers
-    
-    @property 
+
+    @property
     def dead(self):
         """ Get lenght of queue dead dispatchers
         """
@@ -96,16 +96,16 @@ class Queue(BrowserView):
         """ Get length of queue quotas
         """
         if self._quotas is None:
-            self._quotas = len(self.queue.quotas) 
+            self._quotas = len(self.queue.quotas)
         return self._quotas
-        
+
     def refresh(self):
         """ Refresh jobs statistics
         """
         self._queue = None
         self._queued = self._active = self._failed = self._finished = 0
         self._dead = self._dispatchers = 0
-        
+
         self._queued = len(self.queue)
         for dispatcher in self.queue.dispatchers.itervalues():
             if dispatcher.dead:
@@ -140,10 +140,10 @@ class Queues(BrowserView):
     def __init__(self, context, request):
         super(Queues, self).__init__(context, request)
         self._queues = None
-    
+
     @property
     def queues(self):
-        """ zc.async available queues 
+        """ zc.async available queues
         """
         if self._queues is None:
             service = queryUtility(IAsyncService)
@@ -155,7 +155,7 @@ class Queues(BrowserView):
     def queue(self, name=''):
         """ Refresh jobs statistics
         """
-        queue = queryMultiAdapter((self.context, self.request), 
+        queue = queryMultiAdapter((self.context, self.request),
                                   name='async-controlpanel-queue')
         queue(queue=name)
         return queue
@@ -170,7 +170,7 @@ class Queues(BrowserView):
         self.request.response.redirect(to)
 
     def clear(self):
-        """ Remove completed jobs including aborted ones 
+        """ Remove completed jobs including aborted ones
         """
         ids = self.request.get('ids', [])
         if not ids:
@@ -179,10 +179,10 @@ class Queues(BrowserView):
 
         for name in ids:
             self.queue(name).clear()
-        
+
         return self.redirect(
             _(u"Successfully removed completed jobs from selected queues"))
-    
+
     def __call__(self, **kwargs):
         if self.request.method.lower() == 'post':
             if self.request.get('form.button.Clear', None):
@@ -303,7 +303,7 @@ class Dispatchers(BrowserView):
         super(Dispatchers, self).__init__(context, request)
         self._name = self.request.get('queue', '')
         self._queue = None
-    
+
     @property
     def name(self):
         """ Queue name
@@ -312,7 +312,7 @@ class Dispatchers(BrowserView):
 
     @property
     def queue(self):
-        """ Get zc.async queue by name 
+        """ Get zc.async queue by name
         """
         if self._queue is None:
             service = queryUtility(IAsyncService)
@@ -381,13 +381,13 @@ class Dispatchers(BrowserView):
 
 
 class Quotas(BrowserView):
-    """ zc.async queue quotas 
+    """ zc.async queue quotas
     """
     def __init__(self, context, request):
         super(Quotas, self).__init__(context, request)
         self._name = self.request.get('queue', '')
         self._queue = None
-    
+
     @property
     def name(self):
         """ Queue name
@@ -396,18 +396,18 @@ class Quotas(BrowserView):
 
     @property
     def queue(self):
-        """ Get zc.async queue by name 
+        """ Get zc.async queue by name
         """
         if self._queue is None:
             service = queryUtility(IAsyncService)
             self._queue = service.getQueues()[self._name]
         return self._queue
-    
+
     def quotas(self):
         """ Quotas
         """
         if self.queue is None:
             return
-        
+
         for key, quota in self.queue.quotas.iteritems():
             yield key, quota
