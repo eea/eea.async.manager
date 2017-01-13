@@ -46,4 +46,13 @@
     permission="eea.async.manager.view"
     />
 
+  <browser:page
+    name="async-controlpanel-jobs"
+    layer="eea.async.manager.interfaces.IEEAAsyncManagerLayer"
+    for="zope.interface.Interface"
+    class=".app.jobs.Jobs"
+    template="zpt/jobs.pt"
+    permission="eea.async.manager.view"
+    />
+
 </configure>

@@ -37,8 +37,8 @@
                 <th i18n:translate="">UUID</th>
                 <th i18n:translate="">Agents</th>
                 <th i18n:translate="">Running Jobs</th>
-                <th i18n:translate="">Aborted Jobs</th>
-                <th i18n:translate="">Completed Jobs</th>
+                <th i18n:translate="">Failed Jobs</th>
+                <th i18n:translate="">Finished Jobs</th>
             </tr>
             </thead>
             <tbody>

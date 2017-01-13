@@ -1,7 +1,6 @@
 """ Async Browser Controllers
 """
 import logging
-from uuid import UUID
 from zc.twist import Failure
 from zope.component import queryUtility, queryMultiAdapter
 from plone.app.async.interfaces import IAsyncService

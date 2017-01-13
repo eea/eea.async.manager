@@ -1,0 +1,62 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+        metal:use-macro="here/prefs_main_template/macros/master"
+        i18n:domain="eea">
+
+<body>
+
+<div metal:fill-slot="prefs_configlet_main">
+    <h1 class="documentFirstHeading" i18n:translate="">
+      Async Manager:
+        <tal:name i18n:name="status" tal:replace="python:view.status.title()" />
+        Jobs for
+        <tal:name i18n:name="dname" tal:condition="view/dname" tal:replace="string:dispatcher %{view/dname}" />
+        <tal:name i18n:name="dname" tal:condition="view/qtname" tal:replace="string:quota %{view/qtname}" />
+     </h1>
+
+    <a href="" class="link-parent" tal:condition="view/dname" tal:attributes="href string:$portal_url/@@async-controlpanel-dispatchers?queue=${view/qname}" i18n:translate="">Up to Async Manager Dispatchers</a>
+    <a href="" class="link-parent" tal:condition="view/qtname" tal:attributes="href string:$portal_url/@@async-controlpanel-quotas?queue=${view/qname}" i18n:translate="">Up to Async Manager Quotas</a>
+    <a href="" class="link-parent" tal:condition="python:not (view.dname or view.qtname)" tal:attributes="href string:$portal_url/@@async-controlpanel-queues" i18n:translate="">Up to Async Manager Queues</a>
+
+    <form method="post" action="." tal:attributes="action string:${context/absolute_url}/${view/__name__}">
+        <table class="listing controlpanel-listing">
+            <thead>
+            <tr>
+                <th i18n:translate="">Job Name</th>
+                <th i18n:translate="">Status</th>
+                <th i18n:translate="">Results</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tal:items repeat="key_val view/jobs">
+                <tr tal:define="
+                    oddrow repeat/key_val/odd;
+                    key python:key_val[0];
+                    job python:key_val[1];
+                    "
+                    tal:attributes="class python:oddrow and 'even' or 'odd'">
+                    <td>
+                        <span tal:content="python:key" />
+                    </td>
+                    <td>
+                        <span tal:content="python:job.status" />
+                    </td>
+                    <td>
+                      <span tal:content="python:job.result" />
+                    </td>
+                </tr>
+            </tal:items>
+            </tbody>
+        </table>
+
+        <div class="inlineDisplay"  tal:condition="nothing">
+          <input tal:replace="structure context/@@authenticator/authenticator" />
+          <input type="hidden" name="queue" tal:attributes="value view/name" />
+          <input class="context" type="submit" value="Delete" name="form.button.Delete" i18n:attributes="value" />
+        </div>
+    </form>
+
+</div>
+
+</body>
+</html>

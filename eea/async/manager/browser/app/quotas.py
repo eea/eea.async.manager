@@ -1,13 +1,9 @@
 """ Async Quotas
 """
 import logging
-from uuid import UUID
-from zc.twist import Failure
-from zope.component import queryUtility, queryMultiAdapter
+from zope.component import queryUtility
 from plone.app.async.interfaces import IAsyncService
-from Products.statusmessages.interfaces import IStatusMessage
 from Products.Five.browser import BrowserView
-from eea.async.manager.config import EEAMessageFactory as _
 logger = logging.getLogger("eea.async.manager")
 
 class Quotas(BrowserView):
