@@ -5,14 +5,12 @@
 
 <metal:javascript_head_slot fill-slot="javascript_head_slot">
     <script type="text/javascript" charset="utf-8">
-        if(!window.toggleSelect){
-            var toggleSelect = function (elem, selector) {
-                var checkboxes = [].slice.call(document.querySelectorAll('input[type=checkbox][name="' + selector + '"]'));
-                checkboxes.forEach(function(checkbox){
-                     checkbox.checked = elem.checked;
-                });
-            };
-        }
+        var toggleSelect = function (elem, selector) {
+            var checkboxes = [].slice.call(document.querySelectorAll('input[type=checkbox][name="' + selector + '"]'));
+            checkboxes.forEach(function(checkbox){
+                 checkbox.checked = elem.checked;
+            });
+        };
     </script>
 </metal:javascript_head_slot>
 
@@ -20,7 +18,7 @@
 
 <div metal:fill-slot="prefs_configlet_main">
     <h1 class="documentFirstHeading" i18n:translate="">Async Manager: Queues</h1>
-    
+
     <a href="" class="link-parent" tal:attributes="href string:$portal_url/@@overview-controlpanel" i18n:translate="">Up to Site Setup</a>
 
     <form method="post" action="." tal:attributes="action string:${context/absolute_url}/${view/__name__}">

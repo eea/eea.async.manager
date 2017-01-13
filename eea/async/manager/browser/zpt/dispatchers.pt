@@ -5,16 +5,14 @@
 
 <metal:javascript_head_slot fill-slot="javascript_head_slot">
     <script type="text/javascript" charset="utf-8">
-        if(!window.toggleSelect){
-            var toggleSelect = function (elem, selector) {
-                var checkboxes = [].slice.call(document.querySelectorAll('input[type=checkbox][name="' + selector + '"]'));
-                checkboxes.forEach(function(checkbox){
-                    if(!checkbox.disabled){
-                        checkbox.checked = elem.checked;
-                    }
-                });
-            };
-        }
+        var toggleSelect = function (elem, selector) {
+            var checkboxes = [].slice.call(document.querySelectorAll('input[type=checkbox][name="' + selector + '"]'));
+            checkboxes.forEach(function(checkbox){
+                if(!checkbox.disabled){
+                    checkbox.checked = elem.checked;
+                }
+            });
+        };
     </script>
 </metal:javascript_head_slot>
 
@@ -25,7 +23,7 @@
       Async Manager: Dispatchers for Queue
       <tal:name i18n:name="queue" tal:replace="python:view.name or '(Default)'" />
      </h1>
-    
+
     <a href="" class="link-parent" tal:attributes="href string:$portal_url/@@async-controlpanel-queues" i18n:translate="">Up to Async Manager: Queues</a>
 
     <form method="post" action="." tal:attributes="action string:${context/absolute_url}/${view/__name__}">
@@ -46,7 +44,7 @@
             <tbody>
             <tal:items repeat="key_val view/dispatchers">
                 <tr tal:define="
-                    oddrow repeat/key_val/odd; 
+                    oddrow repeat/key_val/odd;
                     key python:key_val[0];
                     dispatcher python:key_val[1];
                     dispatcher_stats python:view.dispatcher(dispatcher);
