@@ -55,14 +55,14 @@
                         <ul>
                             <tal:args tal:repeat="visible_arg python:info.args">
                                 <li tal:define="visible python:visible_arg[0]; arg python:visible_arg[1]"
-                                    tal:attributes="class python:'hidden' if not visible else ''"
+                                    tal:attributes="class python:'job-details' if not visible else ''"
                                     tal:content="nocall:arg" />
                             </tal:args>
                         </ul>
                     </td>
                     <td>
                         <span tal:content="python:info.result" />
-                        <div class="hidden">
+                        <div class="job-details">
                             <pre tal:content="python:info.details"></pre>
                         </div>
                     </td>

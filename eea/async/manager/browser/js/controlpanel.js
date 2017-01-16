@@ -28,7 +28,6 @@ EEA.AsyncManagerJob = function (context, options) {
 
 EEA.AsyncManagerJob.prototype = {
   initialize: function(){
-    console.log('Aleluia');
     var self = this;
 
     self.context.click(function(){
@@ -40,7 +39,7 @@ EEA.AsyncManagerJob.prototype = {
 
   contextClick: function () {
       var self = this;
-      self.context.find(".hidden").toggle();
+      self.context.find(".job-details").toggle();
   }
 };
 
