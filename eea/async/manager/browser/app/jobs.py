@@ -90,8 +90,8 @@ class Jobs(BrowserView):
         if quota is None:
             quota = self.quota
 
-        for key, job in quota.iteritems():
-            yield key, job
+        for job in quota:
+            yield job.key, job
 
     def dispatcher_jobs(self, dispatcher=None):
         """ Dispatcher jobs
@@ -101,17 +101,17 @@ class Jobs(BrowserView):
 
         for agent in dispatcher.itervalues():
             if not self.status:
-                for key, job in agent.iteritems():
-                    yield key, job
+                for job in agent:
+                    yield job.key, job
                 return
 
             for job in agent.completed:
                 if self.status == 'failed':
                     if isinstance(job.result, Failure):
-                        yield job._p_oid, job
+                        yield job.key, job
                 else:
                     if not isinstance(job.result, Failure):
-                        yield job._p_oid, job
+                        yield job.key, job
 
     def queue_jobs(self, queue=None):
         """ Queue jobs
@@ -120,8 +120,8 @@ class Jobs(BrowserView):
             queue = self.queue
 
         if not self.status:
-            for key, job in queue.iteritems():
-                yield key, job
+            for job in queue:
+                yield job.key, job
             return
 
         for dispatcher in queue.dispatchers.itervalues():

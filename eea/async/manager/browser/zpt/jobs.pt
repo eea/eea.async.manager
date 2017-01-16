@@ -11,7 +11,7 @@
         <tal:name i18n:name="status" tal:replace="python:view.status.title()" />
         Jobs for
         <tal:name i18n:name="dname" tal:condition="view/dname" tal:replace="string:dispatcher %{view/dname}" />
-        <tal:name i18n:name="dname" tal:condition="view/qtname" tal:replace="string:quota %{view/qtname}" />
+        <tal:name i18n:name="qtname" tal:condition="view/qtname" tal:replace="string:quota %{view/qtname}" />
      </h1>
 
     <a href="" class="link-parent" tal:condition="view/dname" tal:attributes="href string:$portal_url/@@async-controlpanel-dispatchers?queue=${view/qname}" i18n:translate="">Back to Async Manager Dispatchers</a>
