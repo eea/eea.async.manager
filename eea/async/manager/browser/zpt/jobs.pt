@@ -10,21 +10,25 @@
       Async Manager:
         <tal:name i18n:name="status" tal:replace="python:view.status.title()" />
         Jobs for
-        <tal:name i18n:name="dname" tal:condition="view/dname" tal:replace="string:dispatcher %{view/dname}" />
-        <tal:name i18n:name="qtname" tal:condition="view/qtname" tal:replace="string:quota %{view/qtname}" />
+        <tal:name i18n:name="dname" tal:condition="view/dname" tal:replace="string:dispatcher ${view/dname}" />
+        <tal:name i18n:name="qtname" tal:condition="view/qtname" tal:replace="string:quota ${view/qtname}" />
      </h1>
 
     <a href="" class="link-parent" tal:condition="view/dname" tal:attributes="href string:$portal_url/@@async-controlpanel-dispatchers?queue=${view/qname}" i18n:translate="">Back to Async Manager Dispatchers</a>
     <a href="" class="link-parent" tal:condition="view/qtname" tal:attributes="href string:$portal_url/@@async-controlpanel-quotas?queue=${view/qname}" i18n:translate="">Back to Async Manager Quotas</a>
     <a href="" class="link-parent" tal:condition="python:not (view.dname or view.qtname)" tal:attributes="href string:$portal_url/@@async-controlpanel-queues" i18n:translate="">Back to Async Manager Queues</a>
 
-    <form method="post" action="." tal:attributes="action string:${context/absolute_url}/${view/__name__}">
+    <form method="post" action="." tal:attributes="action string:${context/absolute_url}/${view/__name__}" class="async-manager-jobs">
         <table class="listing controlpanel-listing">
             <thead>
             <tr>
-                <th i18n:translate="">Job Name</th>
                 <th i18n:translate="">Status</th>
+                <th i18n:translate="">UUID</th>
+                <th i18n:translate="">Callable</th>
+                <th i18n:translate="">Args</th>
                 <th i18n:translate="">Results</th>
+                <th i18n:translate="">Start</th>
+                <th i18n:translate="">End</th>
             </tr>
             </thead>
             <tbody>
@@ -33,16 +37,40 @@
                     oddrow repeat/key_val/odd;
                     key python:key_val[0];
                     job python:key_val[1];
+                    info python:view.job_info(job);
+                    status python:info.status;
+                    klass python:'state-private' if status == 'failed' else ('state-pending' if status == 'running' else 'state-visible');
                     "
-                    tal:attributes="class python:oddrow and 'even' or 'odd'">
+                    tal:attributes="class python:oddrow and 'even' or 'odd'" title="Click for details" i18n:attributes="title" style="cursor: pointer">
+                    <td>
+                        <span tal:content="python:info.status" tal:attributes="class klass" />
+                    </td>
                     <td>
                         <span tal:content="python:key" />
                     </td>
                     <td>
-                        <span tal:content="python:job.status" />
+                        <span tal:content="python:info.callable" />
                     </td>
                     <td>
-                      <span tal:content="python:job.result" />
+                        <ul>
+                            <tal:args tal:repeat="visible_arg python:info.args">
+                                <li tal:define="visible python:visible_arg[0]; arg python:visible_arg[1]"
+                                    tal:attributes="class python:'hidden' if not visible else ''"
+                                    tal:content="nocall:arg" />
+                            </tal:args>
+                        </ul>
+                    </td>
+                    <td>
+                        <span tal:content="python:info.result" />
+                        <div class="hidden">
+                            <pre tal:content="python:info.details"></pre>
+                        </div>
+                    </td>
+                    <td>
+                        <span tal:content="python:info.start" />
+                    </td>
+                    <td>
+                        <span tal:content="python:info.end" />
                     </td>
                 </tr>
             </tal:items>
@@ -56,6 +84,7 @@
         </div>
     </form>
 
+    <script type="text/javascript" tal:attributes="src string:${context/portal_url}/++resource++eea.async.manager.js/controlpanel.js"></script>
 </div>
 
 </body>

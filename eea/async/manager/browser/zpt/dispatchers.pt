@@ -3,35 +3,22 @@
         metal:use-macro="here/prefs_main_template/macros/master"
         i18n:domain="eea">
 
-<metal:javascript_head_slot fill-slot="javascript_head_slot">
-    <script type="text/javascript" charset="utf-8">
-        var toggleSelect = function (elem, selector) {
-            var checkboxes = [].slice.call(document.querySelectorAll('input[type=checkbox][name="' + selector + '"]'));
-            checkboxes.forEach(function(checkbox){
-                if(!checkbox.disabled){
-                    checkbox.checked = elem.checked;
-                }
-            });
-        };
-    </script>
-</metal:javascript_head_slot>
-
 <body>
 
 <div metal:fill-slot="prefs_configlet_main">
     <h1 class="documentFirstHeading" i18n:translate="">
       Async Manager: Dispatchers for Queue
-      <tal:name i18n:name="queue" tal:replace="python:view.name or '(Default)'" />
+      <tal:name i18n:name="queue" tal:replace="python:view.qname or '(Default)'" />
      </h1>
 
     <a href="" class="link-parent" tal:attributes="href string:$portal_url/@@async-controlpanel-queues" i18n:translate="">Back to Async Manager: Queues</a>
 
-    <form method="post" action="." tal:attributes="action string:${context/absolute_url}/${view/__name__}">
+    <form method="post" action="." tal:attributes="action string:${context/absolute_url}/${view/__name__}" class="async-manager-dispatchers">
         <table class="listing controlpanel-listing">
             <thead>
             <tr>
                 <th class="smallcolumn nosort">
-                    <input class="select-all" type="checkbox" name="select_all" onclick="toggleSelect(this, 'ids:list');" />
+                    <input class="select-all" type="checkbox" name="select_all" />
                 </th>
                 <th i18n:translate="">Status</th>
                 <th i18n:translate="">UUID</th>
@@ -47,8 +34,8 @@
                     oddrow repeat/key_val/odd;
                     key python:key_val[0];
                     dispatcher python:key_val[1];
-                    dispatcher_stats python:view.dispatcher(dispatcher);
-                    dead python:dispatcher_stats.dead;
+                    info python:view.dispatcher_info(dispatcher);
+                    dead python:info.dead;
                     status python:'Dead' if dead else 'Active';
                     klass python:'state-private' if dead else 'state-visible';
                     "
@@ -63,21 +50,21 @@
                         <span tal:attributes="class klass" tal:content="python:key" />
                     </td>
                     <td>
-                      <span tal:content="python:dispatcher_stats.agents"/>
+                      <span tal:content="python:info.agents"/>
                     </td>
                     <td>
-                      <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-jobs?queue=${view/name}&dispatcher=$key" title="Active jobs" i18n:attributes="title">
-                          <span class="state-pending" tal:content="python:dispatcher_stats.active"/>
+                      <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-jobs?queue=${view/qname}&dispatcher=$key" title="Active jobs" i18n:attributes="title">
+                          <span class="state-pending" tal:content="python:info.active"/>
                       </a>
                     </td>
                     <td>
-                      <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-jobs?queue=${view/name}&dispatcher=$key&status=failed" title="Failed jobs" i18n:attributes="title">
-                          <span class="state-private" tal:content="python:dispatcher_stats.failed"/>
+                      <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-jobs?queue=${view/qname}&dispatcher=$key&status=failed" title="Failed jobs" i18n:attributes="title">
+                          <span class="state-private" tal:content="python:info.failed"/>
                       </a>
                     </td>
                     <td>
-                      <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-jobs?queue=${view/name}&dispatcher=$key&status=finished" title="Finished jobs" i18n:attributes="title">
-                          <span class="state-visible" tal:content="python:dispatcher_stats.finished"/>
+                      <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-jobs?queue=${view/qname}&dispatcher=$key&status=finished" title="Finished jobs" i18n:attributes="title">
+                          <span class="state-visible" tal:content="python:info.finished"/>
                       </a>
                     </td>
                 </tr>
@@ -86,12 +73,13 @@
         </table>
 
         <div class="inlineDisplay">
-            <input type="hidden" name="queue" tal:attributes="value view/name" />
+            <input type="hidden" name="queue" tal:attributes="value view/qname" />
             <input tal:replace="structure context/@@authenticator/authenticator" />
             <input class="context" type="submit" value="Delete" title="Remove completed/aborted jobs and delete dispatchers" name="form.button.Delete" i18n:attributes="value title" />
         </div>
     </form>
 
+    <script type="text/javascript" tal:attributes="src string:${context/portal_url}/++resource++eea.async.manager.js/controlpanel.js"></script>
 </div>
 
 </body>

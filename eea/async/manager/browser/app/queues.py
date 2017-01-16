@@ -2,20 +2,19 @@
 """
 import logging
 from zc.twist import Failure
-from zope.component import queryUtility, queryMultiAdapter
+from zope.component import queryUtility
 from plone.app.async.interfaces import IAsyncService
 from Products.statusmessages.interfaces import IStatusMessage
 from Products.Five.browser import BrowserView
 from eea.async.manager.config import EEAMessageFactory as _
+from eea.async.manager.interfaces import IQueueInfo
 logger = logging.getLogger("eea.async.manager")
 
-class Queue(BrowserView):
+class Queue(object):
     """ Queue stats
     """
-    def __init__(self, context, request):
-        super(Queue, self).__init__(context, request)
-        self._name = self.request.get('queue', '')
-        self._queue = None
+    def __init__(self, context):
+        self.context = context
         self._dispatchers = None
         self._dead = None
         self._quotas = None
@@ -24,23 +23,6 @@ class Queue(BrowserView):
         self._active = None
         self._failed = None
         self._finished = None
-
-    @property
-    def name(self):
-        """ Queue name
-        """
-        return self._name
-
-    @property
-    def queue(self):
-        """ zc.async queue
-        """
-        if self._queue is None:
-            service = queryUtility(IAsyncService)
-            if not service:
-                return None
-            self._queue = service.getQueues()[self.name]
-        return self._queue
 
     @property
     def queued(self):
@@ -95,7 +77,7 @@ class Queue(BrowserView):
         """ Get length of queue quotas
         """
         if self._quotas is None:
-            self._quotas = len(self.queue.quotas)
+            self._quotas = len(self.context.quotas)
         return self._quotas
 
     def refresh(self):
@@ -105,8 +87,8 @@ class Queue(BrowserView):
         self._queued = self._active = self._failed = self._finished = 0
         self._dead = self._dispatchers = 0
 
-        self._queued = len(self.queue)
-        for dispatcher in self.queue.dispatchers.itervalues():
+        self._queued = len(self.context)
+        for dispatcher in self.context.dispatchers.itervalues():
             if dispatcher.dead:
                 self._dead += 1
             else:
@@ -122,15 +104,9 @@ class Queue(BrowserView):
     def clear(self):
         """ Cleanup completed jobs
         """
-        for dispatcher in self.queue.dispatchers.itervalues():
+        for dispatcher in self.context.dispatchers.itervalues():
             for agent in dispatcher.itervalues():
                 agent.completed.clear()
-
-    def __call__(self, **kwargs):
-        kwargs.update(self.request.form)
-        if 'queue' in kwargs:
-            self._name = kwargs.get('queue', '')
-            self.refresh()
 
 
 class Queues(BrowserView):
@@ -151,13 +127,10 @@ class Queues(BrowserView):
             self._queues = service.getQueues()
         return self._queues
 
-    def queue(self, name=''):
+    def queue_info(self, queue):
         """ Refresh jobs statistics
         """
-        queue = queryMultiAdapter((self.context, self.request),
-                                  name='async-controlpanel-queue')
-        queue(queue=name)
-        return queue
+        return IQueueInfo(queue)
 
     def redirect(self, msg='', msg_type='info', to=''):
         """ Set status message and redirect

@@ -3,22 +3,21 @@
 import logging
 from uuid import UUID
 from zc.twist import Failure
-from zope.component import queryUtility, queryMultiAdapter
+from zope.component import queryUtility
 from plone.app.async.interfaces import IAsyncService
 from Products.statusmessages.interfaces import IStatusMessage
 from Products.Five.browser import BrowserView
 from eea.async.manager.config import EEAMessageFactory as _
+from eea.async.manager.interfaces import IDispatcherInfo
 logger = logging.getLogger("eea.async.manager")
 
-class Dispatcher(BrowserView):
+
+class Dispatcher(object):
     """ zc.async queue dispatcher
     """
-    def __init__(self, context, request):
-        super(Dispatcher, self).__init__(context, request)
-        self._qnane = self.request.get('queue', '')
-        self._name = self.request.get('dispatcher', '')
-        self._queue = None
-        self._dispatcher = None
+    def __init__(self, context):
+        self.context = context
+
         self._agents = None
         # Jobs
         self._active = None
@@ -26,33 +25,10 @@ class Dispatcher(BrowserView):
         self._finished = None
 
     @property
-    def name(self):
-        """ Queue name
-        """
-        return self._name
-
-    @property
     def dead(self):
         """ Dispatcher is dead
         """
-        return self.dispatcher.dead
-
-    @property
-    def queue(self):
-        """ Get zc.async queue by name
-        """
-        if self._queue is None:
-            service = queryUtility(IAsyncService)
-            self._queue = service.getQueues()[self._qname]
-        return self._queue
-
-    @property
-    def dispatcher(self):
-        """ Get dispatcher in queue
-        """
-        if self._dispatcher is None:
-            self._dispatcher = self.queue.dispatchers[self._name]
-        return self._dispatcher
+        return self.context.dead
 
     @property
     def agents(self):
@@ -91,7 +67,7 @@ class Dispatcher(BrowserView):
         """
         self._agents = 0
         self._active = self._failed = self._finished = 0
-        for agent in self.dispatcher.itervalues():
+        for agent in self.context.itervalues():
             self._agents += 1
             self._active += len(agent)
             for job in agent.completed:
@@ -103,16 +79,8 @@ class Dispatcher(BrowserView):
     def clear(self):
         """ Cleanup completed jobs
         """
-        for agent in self.dispatcher.itervalues():
+        for agent in self.context.itervalues():
             agent.completed.clear()
-
-    def __call__(self, **kwargs):
-        kwargs.update(self.request.form)
-        if 'queue' in kwargs:
-            self._qname = kwargs.get('queue')
-        if 'name' in kwargs:
-            self._name = kwargs.get('name')
-            self.refresh()
 
 
 class Dispatchers(BrowserView):
@@ -120,14 +88,14 @@ class Dispatchers(BrowserView):
     """
     def __init__(self, context, request):
         super(Dispatchers, self).__init__(context, request)
-        self._name = self.request.get('queue', '')
+        self._qname = self.request.get('queue', '')
         self._queue = None
 
     @property
-    def name(self):
+    def qname(self):
         """ Queue name
         """
-        return self._name
+        return self._qname
 
     @property
     def queue(self):
@@ -135,7 +103,7 @@ class Dispatchers(BrowserView):
         """
         if self._queue is None:
             service = queryUtility(IAsyncService)
-            self._queue = service.getQueues()[self._name]
+            self._queue = service.getQueues()[self.qname]
         return self._queue
 
     def dispatchers(self):
@@ -147,13 +115,10 @@ class Dispatchers(BrowserView):
         for key, dispatcher in self.queue.dispatchers.iteritems():
             yield key, dispatcher
 
-    def dispatcher(self, obj):
+    def dispatcher_info(self, dispatcher):
         """ Get dispatcher helper view
         """
-        dispatcher = queryMultiAdapter((self.context, self.request),
-                                  name='async-controlpanel-dispatcher')
-        dispatcher._dispatcher = obj
-        return dispatcher
+        return IDispatcherInfo(dispatcher)
 
     def delete(self):
         """ Remove dispatchers

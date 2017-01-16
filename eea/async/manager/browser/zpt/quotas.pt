@@ -8,12 +8,12 @@
 <div metal:fill-slot="prefs_configlet_main">
     <h1 class="documentFirstHeading" i18n:translate="">
       Async Manager: Quotas for Queue
-      <tal:name i18n:name="queue" tal:replace="python:view.name or '(Default)'" />
+      <tal:name i18n:name="queue" tal:replace="python:view.qname or '(Default)'" />
      </h1>
 
     <a href="" class="link-parent" tal:attributes="href string:$portal_url/@@async-controlpanel-queues" i18n:translate="">Back to Async Manager Queues</a>
 
-    <form method="post" action="." tal:attributes="action string:${context/absolute_url}/${view/__name__}">
+    <form method="post" action="." tal:attributes="action string:${context/absolute_url}/${view/__name__}" class="async-manager-quotas">
         <table class="listing controlpanel-listing">
             <thead>
             <tr>
@@ -28,7 +28,7 @@
                     oddrow repeat/key_val/odd;
                     key python:key_val[0];
                     quota python:key_val[1];
-                    jobs python:len([job for job in quota]);
+                    info python:view.quota_info(quota);
                     "
                     tal:attributes="class python:oddrow and 'even' or 'odd'">
                     <td>
@@ -38,8 +38,8 @@
                         <span tal:content="python:quota.size" />
                     </td>
                     <td>
-                        <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-jobs?queue=${view/name}&quota=$key" title="Active jobs" i18n:attributes="title">
-                            <span class="state-pending" tal:content="jobs" />
+                        <a tal:attributes="href string:${context/absolute_url}/@@async-controlpanel-jobs?queue=${view/qname}&quota=$key" title="Active jobs" i18n:attributes="title">
+                            <span class="state-pending" tal:content="python:info.queued" />
                         </a>
                     </td>
                 </tr>
@@ -49,7 +49,7 @@
 
         <div class="inlineDisplay"  tal:condition="nothing">
           <input tal:replace="structure context/@@authenticator/authenticator" />
-          <input type="hidden" name="queue" tal:attributes="value view/name" />
+          <input type="hidden" name="queue" tal:attributes="value view/qname" />
           <input class="context" type="submit" value="Delete" name="form.button.Delete" i18n:attributes="value" />
         </div>
     </form>

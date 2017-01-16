@@ -12,13 +12,10 @@
     permission="eea.async.manager.view"
     />
 
-  <browser:page
-    name="async-controlpanel-queue"
-    layer="eea.async.manager.interfaces.IEEAAsyncManagerLayer"
+  <adapter
     for="zope.interface.Interface"
-    class=".app.queues.Queue"
-    permission="eea.async.manager.view"
-    />
+    provides="eea.async.manager.interfaces.IQueueInfo"
+    factory=".app.queues.Queue" />
 
   <browser:page
     name="async-controlpanel-dispatchers"
@@ -29,13 +26,10 @@
     permission="eea.async.manager.view"
     />
 
-  <browser:page
-    name="async-controlpanel-dispatcher"
-    layer="eea.async.manager.interfaces.IEEAAsyncManagerLayer"
+  <adapter
     for="zope.interface.Interface"
-    class=".app.dispatchers.Dispatcher"
-    permission="eea.async.manager.view"
-    />
+    provides="eea.async.manager.interfaces.IDispatcherInfo"
+    factory=".app.dispatchers.Dispatcher" />
 
   <browser:page
     name="async-controlpanel-quotas"
@@ -46,6 +40,11 @@
     permission="eea.async.manager.view"
     />
 
+  <adapter
+    for="zope.interface.Interface"
+    provides="eea.async.manager.interfaces.IQuotaInfo"
+    factory=".app.quotas.Quota" />
+
   <browser:page
     name="async-controlpanel-jobs"
     layer="eea.async.manager.interfaces.IEEAAsyncManagerLayer"
@@ -54,5 +53,14 @@
     template="zpt/jobs.pt"
     permission="eea.async.manager.view"
     />
+
+  <adapter
+    for="zope.interface.Interface"
+    provides="eea.async.manager.interfaces.IJobInfo"
+    factory=".app.jobs.Job" />
+
+  <browser:resourceDirectory
+    name="eea.async.manager.js"
+    directory="./js" />
 
 </configure>

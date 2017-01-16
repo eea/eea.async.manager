@@ -4,21 +4,38 @@ import logging
 from zope.component import queryUtility
 from plone.app.async.interfaces import IAsyncService
 from Products.Five.browser import BrowserView
+from eea.async.manager.interfaces import IQuotaInfo
 logger = logging.getLogger("eea.async.manager")
+
+class Quota(object):
+    """ Quota Info
+    """
+    def __init__(self, context):
+        self.context = context
+        self._queued = None
+
+    @property
+    def queued(self):
+        """ Queued jobs in quota
+        """
+        if self._queued is None:
+            self._queued = len(self.context)
+        return self._queued
+
 
 class Quotas(BrowserView):
     """ zc.async queue quotas
     """
     def __init__(self, context, request):
         super(Quotas, self).__init__(context, request)
-        self._name = self.request.get('queue', '')
+        self._qname = self.request.get('queue', '')
         self._queue = None
 
     @property
-    def name(self):
+    def qname(self):
         """ Queue name
         """
-        return self._name
+        return self._qname
 
     @property
     def queue(self):
@@ -26,7 +43,7 @@ class Quotas(BrowserView):
         """
         if self._queue is None:
             service = queryUtility(IAsyncService)
-            self._queue = service.getQueues()[self._name]
+            self._queue = service.getQueues()[self.qname]
         return self._queue
 
     def quotas(self):
@@ -37,3 +54,8 @@ class Quotas(BrowserView):
 
         for key, quota in self.queue.quotas.iteritems():
             yield key, quota
+
+    def quota_info(self, quota):
+        """ Get Quoata info
+        """
+        return IQuotaInfo(quota)
