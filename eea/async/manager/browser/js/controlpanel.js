@@ -1,18 +1,13 @@
-if(window.toggleSelect === undefined){
-    var toggleSelect = function (elem, selector) {
-      var checkboxes = [].slice.call(document.querySelectorAll('input[type=checkbox][name="' + selector + '"]'));
-      checkboxes.forEach(function(checkbox){
-         checkbox.checked = elem.checked;
-      });
-    };
-}
-
 if(window.EEA === undefined){
   var EEA = {
     who: 'eea.async.manager',
     version: '1.0'
   };
 }
+
+/* 
+** Async Manager Job  
+*/
 
 EEA.AsyncManagerJob = function (context, options) {
   var self = this;
@@ -31,19 +26,25 @@ EEA.AsyncManagerJob.prototype = {
     var self = this;
 
     self.context.click(function(){
-      self.contextClick();
+      self.toggleSummary();
+      self.toggleDetails();
     });
 
-    self.context.click();
+    self.toggleDetails();
   },
 
-  contextClick: function () {
+  toggleDetails: function () {
       var self = this;
       self.context.find(".job-details").toggle();
+  },
+  
+  toggleSummary: function() {
+    var self = this;
+    self.context.find(".job-summary").toggle();
   }
 };
 
-
+// jQuery plugin for Job
 jQuery.fn.EEAsyncManagerJob = function(options){
   return this.each(function(){
     var context = jQuery(this);
@@ -52,11 +53,61 @@ jQuery.fn.EEAsyncManagerJob = function(options){
   });
 };
 
-jQuery(document).ready(function() {
-    // Select all
-    jQuery('.select-all').click(function(){
-        toggleSelect(this, 'ids:list');
+
+/* 
+** Async Manager Table
+*/
+EEA.AsyncManagerTable = function(context, options){
+  var self = this;
+  self.context = context;
+  self.settings = {};
+
+  if(options){
+    jQuery.extend(self.settings, options);
+  }
+
+  self.initialize();
+};
+
+EEA.AsyncManagerTable.prototype = {
+  initialize: function(){
+    var self = this;
+    
+    self.context.find('.select-all').click(function(){
+      self.toggleSelect(this);
     });
+  },
+  
+  toggleSelect: function(elem){
+    var self = this;
+    self.context.find(self.settings.selector).each(function(){
+      if(!this.disabled){
+        this.checked = elem.checked;
+      }
+    });
+  }
+};
+
+// jQuery plugin for Table
+jQuery.fn.EEAsyncManagerTable= function(options){
+  return this.each(function(){
+    var context = jQuery(this);
+    var adapter = new EEA.AsyncManagerTable(context, options);
+    context.data('EEAsyncManagerTable', adapter);
+  });
+};
+
+
+/*
+** Init 
+*/
+jQuery(document).ready(function() {
+
+    // Table
+    var table = jQuery('.async-manager-table');
+    if(table.length){
+      table.EEAsyncManagerTable({selector: "[name='ids:list']"});
+    }
 
     // Job Results details
     var jobs = jQuery('.async-manager-jobs tr');

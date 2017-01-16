@@ -14,14 +14,14 @@
     <a href="" class="link-parent" tal:attributes="href string:$portal_url/@@async-controlpanel-queues" i18n:translate="">Back to Async Manager: Queues</a>
 
     <form method="post" action="." tal:attributes="action string:${context/absolute_url}/${view/__name__}" class="async-manager-dispatchers">
-        <table class="listing controlpanel-listing">
+        <table class="listing controlpanel-listing async-manager-table">
             <thead>
             <tr>
                 <th class="smallcolumn nosort">
                     <input class="select-all" type="checkbox" name="select_all" />
                 </th>
                 <th i18n:translate="">Status</th>
-                <th i18n:translate="">UUID</th>
+                <th i18n:translate="">Id</th>
                 <th i18n:translate="">Agents</th>
                 <th i18n:translate="">Running Jobs</th>
                 <th i18n:translate="">Failed Jobs</th>

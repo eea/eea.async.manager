@@ -150,7 +150,8 @@ class Queues(BrowserView):
                 _(u"Please select at least one queue to cleanup"), 'error')
 
         for name in ids:
-            self.queue(name).clear()
+            queue = self.queues[name]
+            self.queue_info(queue).clear()
 
         return self.redirect(
             _(u"Successfully removed completed jobs from selected queues"))

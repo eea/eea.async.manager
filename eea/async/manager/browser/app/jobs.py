@@ -1,13 +1,16 @@
 """ Async Quotas
 """
 import logging
+import operator
 from uuid import UUID
 from zc.twist import Failure
 from zc.async.interfaces import ACTIVE, COMPLETED
 from zope.component import queryUtility
 from plone.app.async.interfaces import IAsyncService
+from ZODB.utils import u64
 from Products.Five.browser import BrowserView
 from eea.async.manager.interfaces import IJobInfo
+from plone.batching import Batch
 logger = logging.getLogger("eea.async.manager")
 
 
@@ -23,6 +26,12 @@ class Job(object):
 
 
     @property
+    def oid(self):
+        """ Job id 
+        """
+        return u64(self.context._p_oid)
+    
+    @property
     def status(self):
         """ Job status
         """
@@ -30,10 +39,8 @@ class Job(object):
             if self.context.status == COMPLETED:
                 if isinstance(self.context.result, Failure):
                     self._status = 'failed'
-                else:
-                    self._status = 'finished'
-            elif self.context.status == ACTIVE:
-                self._status = 'running'
+                    return self._status
+            self._status = self.context.status.replace('-status', '')
         return self._status
 
     @property
@@ -102,9 +109,9 @@ class Job(object):
         """ Job start
         """
         if self._start is None:
-            self._start = self.context.active_start
-            if self._start:
-                self._start = self._start.strftime('%Y-%m-%d %H:%M:%S')
+            self._start = getattr(self.context, 'active_start', None)
+            if not self._start:
+                self._start = getattr(self.context, 'begin_after', None)
         return self._start
 
     @property
@@ -113,9 +120,15 @@ class Job(object):
         """
         if self._end is None:
             self._end = self.context.active_end
-            if self._end:
-                self._end = self._end.strftime('%Y-%m-%d %H:%M:%S')
         return self._end
+    
+    def strftime(self, date, fmt='%Y-%m-%d %H:%M:%S'):
+        """ Date to strftime
+        """
+        if hasattr(date, 'strftime'):
+            return date.strftime(fmt)
+        return ''
+            
 
 
 class Jobs(BrowserView):
@@ -200,27 +213,30 @@ class Jobs(BrowserView):
             quota = self.quota
 
         for job in quota:
-            yield job.key, job
+            yield IJobInfo(job)
 
-    def dispatcher_jobs(self, dispatcher=None):
+    def dispatcher_jobs(self, dispatcher=None, status=None):
         """ Dispatcher jobs
         """
         if dispatcher is None:
             dispatcher = self.dispatcher
+        
+        if status is None:
+            status = self.status
 
         for agent in dispatcher.itervalues():
-            if not self.status:
+            if not status:
                 for job in agent:
-                    yield job.key, job
+                    yield IJobInfo(job)
                 return
 
             for job in agent.completed:
-                if self.status == 'failed':
+                if status == 'failed':
                     if isinstance(job.result, Failure):
-                        yield job.key, job
+                        yield IJobInfo(job)
                 else:
                     if not isinstance(job.result, Failure):
-                        yield job.key, job
+                        yield IJobInfo(job)
 
     def queue_jobs(self, queue=None):
         """ Queue jobs
@@ -228,27 +244,30 @@ class Jobs(BrowserView):
         if queue is None:
             queue = self.queue
 
-        if not self.status:
+        status = self.status
+        if not status:
             for job in queue:
-                yield job.key, job
+                yield IJobInfo(job)
             return
+        
+        if status == 'active':
+            status = ''
 
         for dispatcher in queue.dispatchers.itervalues():
-            for key, job in self.dispatcher_jobs(dispatcher):
-                yield key, job
+            for info in self.dispatcher_jobs(dispatcher, status=status):
+                yield info
 
     def jobs(self):
         """ Jobs
         """
         if self.quota is not None:
-            return self.quota_jobs()
-
-        if self.dispatcher is not None:
-            return self.dispatcher_jobs()
-
-        return self.queue_jobs()
-
-    def job_info(self, job):
-        """ Job Info
-        """
-        return IJobInfo(job)
+            results = self.quota_jobs()
+        elif self.dispatcher is not None:
+            results = self.dispatcher_jobs()
+        else:
+            results = self.queue_jobs()
+    
+        b_start = self.request.get('b_start', 0)
+        b_size = self.request.get('b_size', 20)
+        results = sorted(results, key=operator.attrgetter('start'), reverse=True)
+        return Batch(results, b_size, start=b_start)

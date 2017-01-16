@@ -135,7 +135,7 @@ class Dispatchers(BrowserView):
                 logger.warn("Can not remove active dispatcher %s", name)
                 continue
 
-            self.dispatcher(da).clear()
+            self.dispatcher_info(da).clear()
             # XXX Can't use unregister: TypeError: __init__() takes exactly 2...
             # self.queue.dispatchers.unregister(uuid)
             da = self.queue.dispatchers._data.pop(uuid)
