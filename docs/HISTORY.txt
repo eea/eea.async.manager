@@ -3,3 +3,5 @@ Changelog
 
 1.0.dev0 - (unreleased)
 -----------------------
+* Feature: Initial release
+  [voineali refs #80206]

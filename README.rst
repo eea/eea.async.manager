@@ -22,14 +22,14 @@ Main features
 
 * View and cleanup dead zc.async dispatchers
 * View and cleanup completed jobs
-
+* Browser jobs by status, dispatcher, quota
 
 Install
 =======
 
 - Add eea.async.manager to your eggs section in your buildout and re-run buildout.
   You can download a sample buildout from
-  https://github.com/eea/eea.async.manager/tree/master/buildouts/plone4
+  https://github.com/eea/eea.async.manager/tree/master/buildouts/plone5
 - Install *EEA Async Manager* within Site Setup > Add-ons
 
 
