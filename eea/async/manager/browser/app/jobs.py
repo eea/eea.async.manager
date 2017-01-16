@@ -4,7 +4,7 @@ import logging
 import operator
 from uuid import UUID
 from zc.twist import Failure
-from zc.async.interfaces import ACTIVE, COMPLETED
+from zc.async.interfaces import COMPLETED
 from zope.component import queryUtility
 from plone.app.async.interfaces import IAsyncService
 from ZODB.utils import u64
@@ -24,13 +24,12 @@ class Job(object):
         self._start = None
         self._end = None
 
-
     @property
     def oid(self):
-        """ Job id 
+        """ Job id
         """
         return u64(self.context._p_oid)
-    
+
     @property
     def status(self):
         """ Job status
@@ -121,14 +120,14 @@ class Job(object):
         if self._end is None:
             self._end = self.context.active_end
         return self._end
-    
+
     def strftime(self, date, fmt='%Y-%m-%d %H:%M:%S'):
         """ Date to strftime
         """
         if hasattr(date, 'strftime'):
             return date.strftime(fmt)
         return ''
-            
+
 
 
 class Jobs(BrowserView):
@@ -220,7 +219,7 @@ class Jobs(BrowserView):
         """
         if dispatcher is None:
             dispatcher = self.dispatcher
-        
+
         if status is None:
             status = self.status
 
@@ -249,7 +248,7 @@ class Jobs(BrowserView):
             for job in queue:
                 yield IJobInfo(job)
             return
-        
+
         if status == 'active':
             status = ''
 
@@ -266,8 +265,9 @@ class Jobs(BrowserView):
             results = self.dispatcher_jobs()
         else:
             results = self.queue_jobs()
-    
+
         b_start = self.request.get('b_start', 0)
         b_size = self.request.get('b_size', 20)
-        results = sorted(results, key=operator.attrgetter('start'), reverse=True)
+        results = sorted(
+            results, key=operator.attrgetter('start'), reverse=True)
         return Batch(results, b_size, start=b_start)
