@@ -136,11 +136,16 @@ class Dispatchers(BrowserView):
                 continue
 
             self.dispatcher_info(da).clear()
-            # XXX Can't use unregister: TypeError: __init__() takes exactly 2...
+            # XXX Can't use unregister method due to zc.async bug #1
+            # See https://github.com/zopefoundation/zc.async/issues/1
+
             # self.queue.dispatchers.unregister(uuid)
+            #
             da = self.queue.dispatchers._data.pop(uuid)
             self.queue.dispatchers._len.change(-1)
             da.parent = da.name = None
+            #
+            # End of custom un-register
 
         return self.redirect(
             _(u"Successfully removed selected dispatchers"))
