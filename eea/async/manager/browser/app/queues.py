@@ -162,4 +162,3 @@ class Queues(BrowserView):
                 return self.clear()
             return self.redirect(_(u"Invalid request"), 'error')
         return self.index()
-
