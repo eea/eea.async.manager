@@ -7,10 +7,10 @@ from zc.twist import Failure
 from zc.async.interfaces import COMPLETED
 from zope.component import queryUtility
 from plone.app.async.interfaces import IAsyncService
+from plone.batching import Batch
 from ZODB.utils import u64
 from Products.Five.browser import BrowserView
 from eea.async.manager.interfaces import IJobInfo
-from plone.batching import Batch
 logger = logging.getLogger("eea.async.manager")
 
 
