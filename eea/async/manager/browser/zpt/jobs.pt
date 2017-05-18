@@ -5,10 +5,10 @@
 
 <body>
 
-<div metal:fill-slot="prefs_configlet_main">
+<div metal:fill-slot="prefs_configlet_main" tal:define="jobs_status python:view.status">
     <h1 class="documentFirstHeading" i18n:translate="">
       Async Manager:
-        <tal:name i18n:name="status" tal:replace="python:view.status.title()" />
+        <tal:name i18n:name="status" tal:replace="python:jobs_status.title()" />
         Jobs
         <tal:name i18n:name="dname" tal:condition="view/dname" tal:replace="string:for dispatcher ${view/dname}" />
         <tal:name i18n:name="qtname" tal:condition="view/qtname" tal:replace="string:in quota ${view/qtname}" />
@@ -19,12 +19,15 @@
     <a href="" class="link-parent" tal:condition="python:not (view.dname or view.qtname)" tal:attributes="href string:$portal_url/@@async-controlpanel-queues" i18n:translate="">Back to Async Manager Queues</a>
 
     <form method="post" action="." tal:attributes="action string:${context/absolute_url}/${view/__name__}" class="async-manager-jobs" tal:define="batch view/jobs">
-        
+
         <div metal:use-macro="context/batch_macros/macros/navigation" />
-        
+
         <table class="listing controlpanel-listing async-manager-table">
             <thead>
             <tr>
+                <th class="smallcolumn nosort">
+                    <input class="select-all" type="checkbox" name="select_all" />
+                </th>
                 <th i18n:translate="">Status</th>
                 <th i18n:translate="">Id</th>
                 <th i18n:translate="">Callable</th>
@@ -42,6 +45,9 @@
                     klass python:'state-private' if status == 'failed' else ('state-visible' if status == 'completed' else 'state-pending');
                     "
                     tal:attributes="class python:oddrow and 'even' or 'odd'" title="Click for details" i18n:attributes="title" style="cursor: pointer">
+                    <td>
+                        <input type="checkbox" name="ids:list" tal:attributes="value python:info.oid" />
+                    </td>
                     <td>
                         <span tal:content="python:info.status" tal:attributes="class klass" />
                     </td>
@@ -74,12 +80,12 @@
             </tal:items>
             </tbody>
         </table>
-        
+
         <div metal:use-macro="context/batch_macros/macros/navigation" />
 
-        <div class="inlineDisplay"  tal:condition="nothing">
+        <div class="inlineDisplay"  tal:condition="not:jobs_status">
           <input tal:replace="structure context/@@authenticator/authenticator" />
-          <input type="hidden" name="queue" tal:attributes="value view/name" />
+          <input type="hidden" name="queue" tal:attributes="value view/qname" />
           <input class="context" type="submit" value="Delete" name="form.button.Delete" i18n:attributes="value" />
         </div>
     </form>

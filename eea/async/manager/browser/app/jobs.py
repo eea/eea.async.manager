@@ -2,6 +2,7 @@
 """
 import logging
 import operator
+from urllib import urlencode
 from uuid import UUID
 from zc.twist import Failure
 from zc.async.interfaces import COMPLETED
@@ -10,7 +11,9 @@ from plone.app.async.interfaces import IAsyncService
 from plone.batching import Batch
 from ZODB.utils import u64
 from Products.Five.browser import BrowserView
+from Products.statusmessages.interfaces import IStatusMessage
 from eea.async.manager.interfaces import IJobInfo
+from eea.async.manager.config import EEAMessageFactory as _
 logger = logging.getLogger("eea.async.manager")
 
 
@@ -205,6 +208,20 @@ class Jobs(BrowserView):
             self._quota = self.queue.quotas[self.qtname]
         return self._quota
 
+    @property
+    def url(self):
+        """ View URL
+        """
+        url = self.context.absolute_url() + "/async-controlpanel-jobs?"
+        url += urlencode(dict(
+            queue=self.qname,
+            dispatcher=self.dname,
+            quota=self.qtname,
+            status=self.status
+        ))
+        return url
+
+
     def quota_jobs(self, quota=None):
         """ Quota jobs
         """
@@ -271,3 +288,38 @@ class Jobs(BrowserView):
         results = sorted(
             results, key=operator.attrgetter('start'), reverse=True)
         return Batch(results, b_size, start=b_start)
+
+    def delete(self):
+        """ Remove Jobs
+        """
+        ids = self.request.get("ids", [])
+        if not ids:
+            return self.redirect(
+                _(u"Please select at least one job to delete"), "error")
+
+        delete = set()
+        for job in self.queue:
+            if str(IJobInfo(job).oid) in ids:
+                delete.add(job)
+
+        for job in delete:
+            self.queue.remove(job)
+
+        return self.redirect(
+                _(u"Successfully removed selected jobs"))
+
+    def redirect(self, msg='', msg_type='info', to=''):
+        """ Set status message and redirect
+        """
+        if not to:
+            to = self.url
+        if msg:
+            IStatusMessage(self.request).add(msg, type=msg_type)
+        self.request.response.redirect(to)
+
+    def __call__(self, **kwargs):
+        if self.request.method.lower() == 'post':
+            if self.request.get('form.button.Delete', None):
+                return self.delete()
+            return self.redirect(_(u"Invalid request"), 'error')
+        return self.index()
