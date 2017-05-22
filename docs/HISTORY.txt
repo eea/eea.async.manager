@@ -1,6 +1,9 @@
 Changelog
 =========
 
+1.4.dev0 - (unreleased)
+-----------------------
+
 1.3 - (2017-05-22)
 ------------------
 * Feature: Add possibility to remove jobs from queue
