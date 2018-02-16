@@ -3,6 +3,12 @@
         metal:use-macro="here/prefs_main_template/macros/master"
         i18n:domain="eea">
 
+<head>
+    <div metal:fill-slot="javascript_head_slot">
+        <script type="text/javascript" tal:attributes="src string:${context/portal_url}/++resource++eea.async.manager.js/controlpanel.js"></script>
+    </div>
+</head>
+
 <body>
 
 <div metal:fill-slot="prefs_configlet_main">
@@ -79,7 +85,6 @@
         </div>
     </form>
 
-    <script type="text/javascript" tal:attributes="src string:${context/portal_url}/++resource++eea.async.manager.js/controlpanel.js"></script>
 </div>
 
 </body>
