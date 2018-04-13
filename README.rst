@@ -1,8 +1,12 @@
 =================
 EEA Async Manager
 =================
-.. image:: http://ci.eionet.europa.eu/job/eea/job/eea.async.manager/job/master/badge/icon
-  :target: http://ci.eionet.europa.eu/job/eea/job/eea.async.manager/job/master/display/redirect
+.. image:: https://ci.eionet.europa.eu/buildStatus/icon?job=eea/eea.async.manager/develop
+  :target: https://ci.eionet.europa.eu/job/eea/job/eea.async.manager/job/develop/display/redirect
+  :alt: Develop
+.. image:: https://ci.eionet.europa.eu/buildStatus/icon?job=eea/eea.async.manager/master
+  :target: https://ci.eionet.europa.eu/job/eea/job/eea.async.manager/job/master/display/redirect
+  :alt: Master
 
 Manage plone.app.async (zc.async) queue via Plone > Site Setup
 
