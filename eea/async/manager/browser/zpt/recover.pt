@@ -19,7 +19,7 @@
     <a href="" class="link-parent" tal:attributes="href string:$portal_url/@@async-controlpanel-queues" i18n:translate="">Back to Async Manager</a>
 
     <form method="post" action="." tal:attributes="action string:${context/absolute_url}/${view/__name__}" class="async-manager-recover">
-        <h2>Next jobs in queue</h2>
+        <h2 i18n:translate="">Next 5 jobs in queue</h2>
         <pre class="latest-jobs"><tal:jobs repeat="job view/jobs">
 <tal:job replace="python:repr(job)" /></tal:jobs>
         </pre>
