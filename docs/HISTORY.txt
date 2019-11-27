@@ -1,8 +1,17 @@
 Changelog
 =========
 
+2.0 - (2019-11-27)
+-----------------------
+* Upgrade step: Within "Plone > Site setup > Add-ons" click on
+  upgrade button available for EEA Async Manager
+  [avoinea refs #111606]
+* Feature: Add possibility to recover zc.async queue by removing broken jobs / dispachers
+  within Site Setup > Async: Recover
+  [avoinea refs #111606]
+
 1.6 - (2019-01-28)
----------------------
+--------------------------
 * Jenkins: Add sonarqube step
   [avoinea refs #101552]
 * Change: updated URLs pointing to eea.europa.eu with https://
@@ -39,4 +48,3 @@ Changelog
 ------------------
 * Feature: Initial release
   [voineali refs #80206]
-

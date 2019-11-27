@@ -2,7 +2,7 @@
 <object name="portal_controlpanel">
 
   <configlet
-    title="Async Manager"
+    title="Async: Manager"
     action_id="eea.async.manager"
     appId="eea.async.manager"
     category="Products"
@@ -10,6 +10,18 @@
     visible="True"
     icon_expr="string:${portal_url}/maintenance_icon.png"
     url_expr="string:$portal_url/@@async-controlpanel-queues">
+      <permission>EEA Async Manager: View</permission>
+  </configlet>
+
+  <configlet
+    title="Async: Recover"
+    action_id="eea.async.manager.recover"
+    appId="eea.async.manager"
+    category="Products"
+    condition_expr=""
+    visible="True"
+    icon_expr="string:${portal_url}/maintenance_icon.png"
+    url_expr="string:$portal_url/@@async-controlpanel-recover">
       <permission>EEA Async Manager: View</permission>
   </configlet>
 

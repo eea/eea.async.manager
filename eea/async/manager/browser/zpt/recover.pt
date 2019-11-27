@@ -1,0 +1,36 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+        metal:use-macro="here/prefs_main_template/macros/master"
+        i18n:domain="eea">
+
+<head>
+    <div metal:fill-slot="javascript_head_slot">
+        <script type="text/javascript" tal:attributes="src string:${context/portal_url}/++resource++eea.async.manager.js/controlpanel.js"></script>
+    </div>
+</head>
+
+<body>
+
+<div metal:fill-slot="prefs_configlet_main">
+    <h1 class="documentFirstHeading" i18n:translate="">
+      Async Manager: Recover
+     </h1>
+
+    <a href="" class="link-parent" tal:attributes="href string:$portal_url/@@async-controlpanel-queues" i18n:translate="">Back to Async Manager</a>
+
+    <form method="post" action="." tal:attributes="action string:${context/absolute_url}/${view/__name__}" class="async-manager-recover">
+        <h2 i18n:translate="">Next 5 jobs in queue</h2>
+        <pre class="latest-jobs"><tal:jobs repeat="job view/jobs">
+<tal:job replace="python:repr(job)" /></tal:jobs>
+        </pre>
+        <div class="inlineDisplay">
+            <input type="hidden" name="queue" tal:attributes="value view/qname" />
+            <input tal:replace="structure context/@@authenticator/authenticator" />
+            <input class="context" type="submit" value="Remove next job" title="Remove next job in queue" name="form.button.delete.job" i18n:attributes="value title" />
+            <input class="context" type="submit" value="Remove dead dispachers" title="Remove dead/inactive dispatchers" name="form.button.delete.dispatchers" i18n:attributes="value title" />
+        </div>
+    </form>
+
+</div>
+</body>
+</html>
