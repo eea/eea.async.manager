@@ -8,6 +8,7 @@
     layer="eea.async.manager.interfaces.IEEAAsyncManagerLayer"
     for="zope.interface.Interface"
     class=".app.recover.Recover"
+    template="zpt/recover.pt"
     permission="eea.async.manager.view"
     />
 

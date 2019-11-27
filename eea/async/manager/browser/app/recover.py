@@ -12,8 +12,6 @@ from eea.async.manager.config import EEAMessageFactory as _
 class Recover(BrowserView):
     """ Recover zc.async queue
     """
-    template = ViewPageTemplateFile('../zpt/recover.pt')
-
     def __init__(self, context, request):
         super(Recover, self).__init__(context, request)
         self._qname = self.request.get('queue', '')
@@ -34,10 +32,14 @@ class Recover(BrowserView):
             self._queue = service.getQueues()[self.qname]
         return self._queue
 
-    def jobs(self):
+    def jobs(self, limit=5):
         """ Next jobs in queue
         """
+        count = 0
         for job in self.queue:
+            count += 1
+            if count > limit:
+                return
             yield job
 
     def dispatchers(self):
@@ -56,16 +58,21 @@ class Recover(BrowserView):
         """
         for job in self.jobs():
             self.queue.remove(job)
-            return self.redirect("Successfully removed job: %s" % job)
+            return self.redirect(
+                'Successfully removed job: "%s"' % repr(job).replace('<', ''))
         return self.redirect(_("There is no job in queue to be deleted."))
 
     def delete_dead_dispatchers(self):
         """ Remove dead dispatchers
         """
+        uids = set()
         for uuid, da in self.dispatchers():
             if da.activated:
                 continue
+            uids.add(uuid)
 
+        for uuid in uids:
+            da = self.queue.dispatchers[uuid]
             IDispatcherInfo(da).clear()
             # XXX Can't use unregister method due to zc.async bug #1
             # See https://github.com/zopefoundation/zc.async/issues/1
@@ -78,7 +85,8 @@ class Recover(BrowserView):
             #
             # End of custom un-register
 
-        return self.redirect(_(u"Successfully removed dead dispatchers"))
+        return self.redirect(
+            u"Successfully removed %s dead dispatchers" % len(uids))
     #
     # Return
     #
@@ -94,8 +102,8 @@ class Recover(BrowserView):
     def __call__(self, **kwargs):
         if self.request.method.lower() == 'post':
             if self.request.get('form.button.delete.job', None):
-                return self.delete()
-            elif self.request.get('form.button.delete.dispachers', None):
-                return self.clear()
+                return self.delete_next_job()
+            elif self.request.get('form.button.delete.dispatchers', None):
+                return self.delete_dead_dispatchers()
             return self.redirect(_(u"Invalid request"), 'error')
         return self.index()
