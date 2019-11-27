@@ -1,8 +1,14 @@
 Changelog
 =========
 
-1.7-dev0 - (unreleased)
----------------------
+2.0 - (2019-11-27)
+-----------------------
+* Upgrade step: Within "Plone > Site setup > Add-ons" click on
+  upgrade button available for EEA Async Manager
+  [avoinea refs #111606]
+* Feature: Add possibility to recover zc.async queue by removing broken jobs / dispachers
+  within Site Setup > Async: Recover
+  [avoinea refs #111606]
 
 1.6 - (2019-01-28)
 ---------------------

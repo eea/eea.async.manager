@@ -5,8 +5,8 @@ if(window.EEA === undefined){
   };
 }
 
-/* 
-** Async Manager Job  
+/*
+** Async Manager Job
 */
 
 EEA.AsyncManagerJob = function (context, options) {
@@ -37,7 +37,7 @@ EEA.AsyncManagerJob.prototype = {
       var self = this;
       self.context.find(".job-details").toggle();
   },
-  
+
   toggleSummary: function() {
     var self = this;
     self.context.find(".job-summary").toggle();
@@ -54,7 +54,7 @@ jQuery.fn.EEAsyncManagerJob = function(options){
 };
 
 
-/* 
+/*
 ** Async Manager Table
 */
 EEA.AsyncManagerTable = function(context, options){
@@ -72,12 +72,12 @@ EEA.AsyncManagerTable = function(context, options){
 EEA.AsyncManagerTable.prototype = {
   initialize: function(){
     var self = this;
-    
+
     self.context.find('.select-all').click(function(){
       self.toggleSelect(this);
     });
   },
-  
+
   toggleSelect: function(elem){
     var self = this;
     self.context.find(self.settings.selector).each(function(){
@@ -99,7 +99,7 @@ jQuery.fn.EEAsyncManagerTable= function(options){
 
 
 /*
-** Init 
+** Init
 */
 jQuery(document).ready(function() {
 

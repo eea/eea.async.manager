@@ -4,6 +4,14 @@
   i18n_domain="eea">
 
   <browser:page
+    name="async-controlpanel-recover"
+    layer="eea.async.manager.interfaces.IEEAAsyncManagerLayer"
+    for="zope.interface.Interface"
+    class=".app.recover.Recover"
+    permission="eea.async.manager.view"
+    />
+
+  <browser:page
     name="async-controlpanel-queues"
     layer="eea.async.manager.interfaces.IEEAAsyncManagerLayer"
     for="zope.interface.Interface"
