@@ -92,9 +92,10 @@ class Recover(BrowserView):
         self.request.response.redirect(to)
 
     def __call__(self, **kwargs):
-        if self.request.get('form.button.delete.job', None):
-            return self.delete()
-        elif self.request.get('form.button.delete.dispachers', None):
-            return self.clear()
-        return self.redirect(_(u"Invalid request"), 'error')
+        if self.request.method.lower() == 'post':
+            if self.request.get('form.button.delete.job', None):
+                return self.delete()
+            elif self.request.get('form.button.delete.dispachers', None):
+                return self.clear()
+            return self.redirect(_(u"Invalid request"), 'error')
         return self.index()
