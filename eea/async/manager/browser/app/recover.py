@@ -3,7 +3,6 @@
 from zope.component import queryUtility
 from plone.app.async.interfaces import IAsyncService
 from Products.Five.browser import BrowserView
-from zope.browserpage.viewpagetemplatefile import ViewPageTemplateFile
 from Products.statusmessages.interfaces import IStatusMessage
 from eea.async.manager.interfaces import IDispatcherInfo
 from eea.async.manager.config import EEAMessageFactory as _
