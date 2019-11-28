@@ -1,11 +1,13 @@
 """ Recover Async
 """
+import logging
 from zope.component import queryUtility
 from plone.app.async.interfaces import IAsyncService
 from Products.Five.browser import BrowserView
 from Products.statusmessages.interfaces import IStatusMessage
 from eea.async.manager.interfaces import IDispatcherInfo
 from eea.async.manager.config import EEAMessageFactory as _
+logger = logging.getLogger("eea.async.manager")
 
 
 class Recover(BrowserView):
@@ -49,9 +51,24 @@ class Recover(BrowserView):
 
         for key, dispatcher in self.queue.dispatchers.iteritems():
             yield key, dispatcher
+
     #
     # Actions
     #
+
+    def cleanup_quotas(self):
+        """ Cleanup quotas with issues
+        """
+        count = 0
+        for name, quota in self.queue.quotas.values():
+            try:
+                [job for job in quota]
+            except Exception as err:
+                logger.warn("Fixing broken quota: %s. Error: %s", name, err)
+                self.queue.quotas[name]._data = tuple()
+                count += 1
+        return self.redirect('Fixed %s quotas' % count)
+
     def delete_next_job(self):
         """ Return next jobs in queue
         """
@@ -100,9 +117,11 @@ class Recover(BrowserView):
 
     def __call__(self, **kwargs):
         if self.request.method.lower() == 'post':
-            if self.request.get('form.button.delete.job', None):
-                return self.delete_next_job()
+            if self.request.get('form.button.cleanup.quotas', None):
+                return self.cleanup_quotas()
             elif self.request.get('form.button.delete.dispatchers', None):
                 return self.delete_dead_dispatchers()
+            elif self.request.get('form.button.delete.job', None):
+                return self.delete_next_job()
             return self.redirect(_(u"Invalid request"), 'error')
         return self.index()

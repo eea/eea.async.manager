@@ -3,6 +3,8 @@ Changelog
 
 2.1-dev0 - (unreleased)
 ---------------------------
+* Feature: Add possibility to cleanup broken jobs from quotas within Site Setup > Async: Recover
+  [avoinea refs #111628]
 
 2.0 - (2019-11-27)
 -----------------------

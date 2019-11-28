@@ -26,8 +26,9 @@
         <div class="inlineDisplay">
             <input type="hidden" name="queue" tal:attributes="value view/qname" />
             <input tal:replace="structure context/@@authenticator/authenticator" />
+            <input class="context" type="submit" value="Cleanup quotas" title="Remove broken jobs from quotas" name="form.button.cleanup.quotas" i18n:attributes="value title" />
+            <input class="context" type="submit" value="Cleanup dispachers" title="Remove dead/inactive dispatchers" name="form.button.delete.dispatchers" i18n:attributes="value title" />
             <input class="context" type="submit" value="Remove next job" title="Remove next job in queue" name="form.button.delete.job" i18n:attributes="value title" />
-            <input class="context" type="submit" value="Remove dead dispachers" title="Remove dead/inactive dispatchers" name="form.button.delete.dispatchers" i18n:attributes="value title" />
         </div>
     </form>
 
