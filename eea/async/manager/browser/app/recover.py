@@ -60,9 +60,9 @@ class Recover(BrowserView):
         """ Cleanup quotas with issues
         """
         count = 0
-        for name, quota in self.queue.quotas.values():
+        for name, quota in self.queue.quotas.items():
             try:
-                [job for job in quota]
+                [job.key for job in quota]
             except Exception as err:
                 logger.warn("Fixing broken quota: %s. Error: %s", name, err)
                 self.queue.quotas[name]._data = tuple()
@@ -103,9 +103,11 @@ class Recover(BrowserView):
 
         return self.redirect(
             u"Successfully removed %s dead dispatchers" % len(uids))
+
     #
     # Return
     #
+
     def redirect(self, msg='', msg_type='info', to=''):
         """ Set status message and redirect
         """
